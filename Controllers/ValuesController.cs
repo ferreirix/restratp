@@ -4,26 +4,33 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RatpService;
+using restratp.Models;
 using static RatpService.WsivPortTypeClient;
 
 namespace restratp.Controllers
 {
     [Route("api/[controller]")]
-    public class ValuesController : Controller
+    public class MetrosController : Controller
     {
         // GET api/values
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-
             var service = new WsivPortTypeClient(EndpointConfiguration.WsivSOAP11port_http);
-            var station = new Station()
-            {
-                name = "carrefour pleyel"
-            };
-            var stations = await service.getStationsAsync(station, null, null, 0, false);
 
-            return Ok(stations.@return.stations);
+            var reseau = new Reseau()
+            {
+                code = Metro.NETWORK_NAME
+            };
+
+            var line = new Line()
+            {
+                reseau = reseau
+            };
+
+            var lines = await service.getLinesAsync(line);
+            
+            return Json(lines.@return);
         }
 
         // GET api/values/5
