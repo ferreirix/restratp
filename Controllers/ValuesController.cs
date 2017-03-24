@@ -18,14 +18,14 @@ namespace restratp.Controllers
         {
             var service = new WsivPortTypeClient(EndpointConfiguration.WsivSOAP11port_http);
 
-            var reseau = new Reseau()
+            var network = new Reseau()
             {
                 code = Metro.NETWORK_NAME
             };
 
             var line = new Line()
             {
-                reseau = reseau
+                reseau = network
             };
 
             var lines = await service.getLinesAsync(line);
