@@ -12,9 +12,11 @@ namespace restratp.Controllers
     [Route("api/[controller]")]
     public class MissionsController : Controller
     {
-        // GET api/metros/stations/5
-        [HttpGet("{lineId}/from/{fromId}")] //  to/{toId}
-        public async Task<IActionResult> GetMissions(string lineId, string fromId) //, string toId
+        private const int MAX_MISSIONS = 4;
+
+
+        [HttpGet("{lineId}/from/{fromId}/way/{way:length(1)}")]
+        public async Task<IActionResult> GetMissions(string lineId, string fromId, string way)
         {
             var service = new WsivPortTypeClient(EndpointConfiguration.WsivSOAP11port_http);
             var station = new Station()
@@ -27,10 +29,12 @@ namespace restratp.Controllers
                 }
             };
 
-            var direction = new Direction();
-            direction.sens = "A";
+            var direction = new Direction()
+            {
+                sens = way
+            };
 
-            var stations = await service.getMissionsNextAsync(station, direction, "", 5);
+            var stations = await service.getMissionsNextAsync(station, direction, "", MAX_MISSIONS);
 
             return Json(stations.@return);
         }
