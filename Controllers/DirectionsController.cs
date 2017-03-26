@@ -20,7 +20,8 @@ namespace restratp.Controllers
             var service = new WsivPortTypeClient(EndpointConfiguration.WsivSOAP11port_http);
             var line = new Line()
             {
-                id = lineId
+                codeStif = lineId,
+                realm = "r"
             };
 
             var directions = await service.getDirectionsAsync(line);

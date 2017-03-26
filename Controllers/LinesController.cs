@@ -25,7 +25,8 @@ namespace restratp.Controllers
 
             var line = new Line()
             {
-                reseau = network
+                reseau = network,
+                realm = "r"
             };
 
             var lines = await service.getLinesAsync(line);

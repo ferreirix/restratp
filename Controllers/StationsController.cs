@@ -22,7 +22,8 @@ namespace restratp.Controllers
             {
                 line = new Line()
                 {
-                    id = lineId
+                    codeStif = lineId,
+                    realm = "r"
                 }
             };
 
