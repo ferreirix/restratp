@@ -8,6 +8,7 @@ namespace restratp.Controllers
     public class HealthStatusController : Controller
     {
         // GET 
+        [HttpGet]
         public IActionResult Get()
         {
            return Ok();
