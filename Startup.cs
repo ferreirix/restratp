@@ -62,6 +62,8 @@ namespace restratp
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseDeveloperExceptionPage();
+
             app.UseMvc();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.

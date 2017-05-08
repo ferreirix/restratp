@@ -55,8 +55,8 @@ namespace restratp.Controllers
             };
 
             var lines = await service.getLinesAsync(line);
-            var model = mapper.Map<Line[], LineModel[]>(lines.@return);
-            return Json(lines);
+            var lineModel = mapper.Map<Line[], LineModel[]>(lines.@return);
+            return Json(lineModel);
         }
     }
 }
