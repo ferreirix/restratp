@@ -1,4 +1,5 @@
 
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,14 @@ namespace restratp.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-           return Ok();
+            try
+            {
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }
         }
     }
 }
