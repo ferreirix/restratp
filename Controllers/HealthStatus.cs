@@ -7,7 +7,12 @@ namespace restratp.Controllers
     [Route("/")]
     public class HealthStatusController : Controller
     {
-        // GET 
+        /// <summary>
+        /// Endpoint to check the service availability.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <returns code="200">Service is available.</returns>
         [HttpGet]
         public IActionResult Get()
         {

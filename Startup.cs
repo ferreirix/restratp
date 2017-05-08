@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -7,7 +8,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.AspNetCore.Swagger;
+using AutoMapper;
 
 namespace restratp
 {
@@ -30,6 +33,8 @@ namespace restratp
         {
             // Add framework services.
             services.AddMvc();
+            
+            services.AddAutoMapper(typeof(Startup));
 
             // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -43,7 +48,12 @@ namespace restratp
                     Contact = new Contact { Name = "Ferreirix", Email = "", Url = "https://github.com/ferreirix" },
                     License = new License { Name = "MIT", Url = "https://github.com/ferreirix/restratp/blob/master/LICENSE" }
                 });
+
+                var filePath = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "restratp.xml");
+                c.IncludeXmlComments(filePath);
+                c.DescribeAllEnumsAsStrings();
             });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
