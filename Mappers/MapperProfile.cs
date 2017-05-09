@@ -6,7 +6,7 @@ using restratp.Models;
 
 namespace restratp.Mappers
 {
-    public class MappingProfile : MapperConfigurationExpression 
+    public class MappingProfile : MapperConfigurationExpression
     {
         public MappingProfile()
         {
@@ -14,6 +14,12 @@ namespace restratp.Mappers
             CreateMap<Line, LineModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.codeStif))
                 .ForMember(dest => dest.ShortName, opt => opt.MapFrom(src => src.id));
+
+            CreateMap<Direction, DirectionModel>()
+                .ForMember(dest => dest.Way, opt => opt.MapFrom(src => src.sens));
+
+
+            CreateMap<Station, StationModel>();
         }
     }
 }
