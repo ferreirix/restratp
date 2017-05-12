@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.AspNetCore.Swagger;
 using AutoMapper;
+using RatpService;
 
 namespace restratp
 {
@@ -37,6 +38,7 @@ namespace restratp
             services.AddMemoryCache();
 
             services.AddAutoMapper(typeof(Startup));
+            services.AddTransient<WsivPortType>((service) => new WsivPortTypeClient(WsivPortTypeClient.EndpointConfiguration.WsivSOAP11port_http));
 
             // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -55,7 +57,7 @@ namespace restratp
                 c.IncludeXmlComments(filePath);
                 c.DescribeAllEnumsAsStrings();
             });
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

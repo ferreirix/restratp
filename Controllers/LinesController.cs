@@ -17,11 +17,15 @@ namespace restratp.Controllers
     {
         private readonly IMapper mapper;
         private IMemoryCache cache;
+        private WsivPortType ratpService;
 
-        public LinesController(IMapper mapper, IMemoryCache memoryCache)
+        public LinesController(IMapper mapper, 
+            IMemoryCache memoryCache,
+            WsivPortType ratpService)
         {
             this.mapper = mapper;
             cache = memoryCache;
+            this.ratpService = ratpService;
         }
 
         /// <summary>
@@ -48,21 +52,13 @@ namespace restratp.Controllers
             getLinesResponse lines;
             if (!cache.TryGetValue(networkId, out lines))
             {
-                var service = new WsivPortTypeClient(EndpointConfiguration.WsivSOAP11port_http);
-
-                var network = new Reseau()
-                {
-                    code = networkId
-                };
-
                 var line = new Line()
                 {
-                    reseau = network,
+                    reseau = new Reseau() { code = networkId },
                     realm = "r"
                 };
 
-                lines = await service.getLinesAsync(line);
-
+                lines = await ratpService.getLinesAsync(new getLinesRequest(line));
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromHours(24));
