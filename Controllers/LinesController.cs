@@ -19,7 +19,7 @@ namespace restratp.Controllers
         private IMemoryCache cache;
         private WsivPortType ratpService;
 
-        public LinesController(IMapper mapper, 
+        public LinesController(IMapper mapper,
             IMemoryCache memoryCache,
             WsivPortType ratpService)
         {
@@ -49,7 +49,12 @@ namespace restratp.Controllers
         {
             networkId = networkId.Trim().ToLower();
 
-            getLinesResponse lines;
+            if (string.IsNullOrWhiteSpace(networkId))
+            {
+                return BadRequest();
+            }
+
+            LineModel[] lines;
             if (!cache.TryGetValue(networkId, out lines))
             {
                 var line = new Line()
@@ -58,18 +63,17 @@ namespace restratp.Controllers
                     realm = "r"
                 };
 
-                lines = await ratpService.getLinesAsync(new getLinesRequest(line));
+                var linesResponse = await ratpService.getLinesAsync(new getLinesRequest(line));
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromHours(24));
 
+                lines = mapper.Map<Line[], LineModel[]>(linesResponse.@return);
                 // Save data in cache.
                 cache.Set(networkId, lines, cacheEntryOptions);
             }
 
-            var lineModel = mapper.Map<Line[], LineModel[]>(lines.@return);
-
-            return Json(lineModel);
+            return Json(lines);
         }
     }
 }
