@@ -8,6 +8,7 @@ using restratp.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using static RatpService.WsivPortTypeClient;
 using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace restratp.Controllers
 {
@@ -15,10 +16,12 @@ namespace restratp.Controllers
     public class LinesController : Controller
     {
         private readonly IMapper mapper;
+        private IMemoryCache cache;
 
-        public LinesController(IMapper mapper)
+        public LinesController(IMapper mapper, IMemoryCache memoryCache)
         {
             this.mapper = mapper;
+            cache = memoryCache;
         }
 
         /// <summary>
@@ -41,21 +44,35 @@ namespace restratp.Controllers
         public async Task<IActionResult> Get(string networkId)
         {
             networkId = networkId.Trim().ToLower();
-            var service = new WsivPortTypeClient(EndpointConfiguration.WsivSOAP11port_http);
 
-            var network = new Reseau()
+            getLinesResponse lines;
+            if (!cache.TryGetValue(networkId, out lines))
             {
-                code = networkId
-            };
+                var service = new WsivPortTypeClient(EndpointConfiguration.WsivSOAP11port_http);
 
-            var line = new Line()
-            {
-                reseau = network,
-                realm = "r"
-            };
+                var network = new Reseau()
+                {
+                    code = networkId
+                };
 
-            var lines = await service.getLinesAsync(line);
+                var line = new Line()
+                {
+                    reseau = network,
+                    realm = "r"
+                };
+
+                lines = await service.getLinesAsync(line);
+
+                // Set cache options.
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromHours(24));
+
+                // Save data in cache.
+                cache.Set(networkId, lines, cacheEntryOptions);
+            }
+
             var lineModel = mapper.Map<Line[], LineModel[]>(lines.@return);
+
             return Json(lineModel);
         }
     }

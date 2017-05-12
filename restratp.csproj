@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <ApplicationInsightsResourceId>/subscriptions/9a7974c4-f960-4de5-9ea1-0315f01c0a7e/resourcegroups/ratp/providers/microsoft.insights/components/restratpws</ApplicationInsightsResourceId>
-    <ApplicationInsightsAnnotationResourceId>/subscriptions/9a7974c4-f960-4de5-9ea1-0315f01c0a7e/resourcegroups/ratp/providers/microsoft.insights/components/restratpws</ApplicationInsightsAnnotationResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/9a7974c4-f960-4de5-9ea1-0315f01c0a7e/resourceGroups/ratp/providers/microsoft.insights/components/restratpws</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>7</LangVersion>
@@ -20,6 +20,7 @@
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0-rc3" />
     <PackageReference Include="System.ServiceModel.Duplex" Version="4.3.0" />

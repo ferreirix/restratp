@@ -33,7 +33,9 @@ namespace restratp
         {
             // Add framework services.
             services.AddMvc();
-            
+
+            services.AddMemoryCache();
+
             services.AddAutoMapper(typeof(Startup));
 
             // Register the Swagger generator, defining one or more Swagger documents
