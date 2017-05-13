@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using RatpService;
 using restratp.Models;
 using static RatpService.WsivPortTypeClient;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace restratp.Controllers
 {
@@ -14,32 +15,50 @@ namespace restratp.Controllers
     public class StationsController : Controller
     {
         private readonly IMapper mapper;
+        private IMemoryCache cache;
+        private WsivPortType ratpService;
+        private const string stationsPrefix = "sta_";
 
-        public StationsController(IMapper mapper)
+        public StationsController(IMapper mapper,
+            IMemoryCache memoryCache,
+            WsivPortType ratpService)
         {
             this.mapper = mapper;
         }
 
-        
+
         [HttpGet("{lineId}")]
         public async Task<IActionResult> GetStations(string lineId)
         {
-            var service = new WsivPortTypeClient(EndpointConfiguration.WsivSOAP11port_http);
-            var station = new Station()
+            lineId = lineId.Trim().ToLower();
+
+            if (string.IsNullOrWhiteSpace(lineId))
             {
-                line = new Line()
+                return BadRequest();
+            }
+
+            StationModel[] stationsModel;
+            if (!cache.TryGetValue(stationsPrefix + lineId, out stationsModel))
+            {
+                var station = new Station()
                 {
-                    codeStif = lineId,
-                    realm = "r"
-                }
-            };
+                    line = new Line()
+                    {
+                        codeStif = lineId,
+                        realm = "r"
+                    }
+                };
+                var stationRequest = new getStationsRequest(station, null, null, 0, true);
+                var stations = await ratpService.getStationsAsync(stationRequest);
 
-            var stations = await service.getStationsAsync(station, null, null, 0, true);
-
-            var stationModel = mapper.Map<Station[], StationModel[]>(stations.@return.stations);
-            service.CloseAsync();
-
-            return Json(stationModel);
+                stationsModel = mapper.Map<Station[], StationModel[]>(stations.@return.stations);
+                // Set cache options.
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromHours(24));
+                // Save data in cache.
+                cache.Set(stationsPrefix + lineId, stationsModel, cacheEntryOptions);
+            }
+            return Json(stationsModel);
         }
 
         [HttpGet("{stationId}/coordinates")]
@@ -51,7 +70,7 @@ namespace restratp.Controllers
                 id = stationId
             };
 
-            var point = await service.getGeoPointsAsync(geoP,0);
+            var point = await service.getGeoPointsAsync(geoP, 0);
             return Json(point);
         }
 

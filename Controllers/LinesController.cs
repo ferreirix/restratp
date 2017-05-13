@@ -64,11 +64,11 @@ namespace restratp.Controllers
                 };
 
                 var linesResponse = await ratpService.getLinesAsync(new getLinesRequest(line));
+                lines = mapper.Map<Line[], LineModel[]>(linesResponse.@return);
+                
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromHours(24));
-
-                lines = mapper.Map<Line[], LineModel[]>(linesResponse.@return);
                 // Save data in cache.
                 cache.Set(networkId, lines, cacheEntryOptions);
             }
