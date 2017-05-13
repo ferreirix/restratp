@@ -12,19 +12,15 @@ using Microsoft.Extensions.Caching.Memory;
 namespace restratp.Controllers
 {
     [Route("api/[controller]")]
-    public class StationsController : Controller
+    public class StationsController : RatpBaseController
     {
-        private readonly IMapper mapper;
-        private IMemoryCache cache;
-        private WsivPortType ratpService;
         private const string stationsPrefix = "sta_";
 
         public StationsController(IMapper mapper,
             IMemoryCache memoryCache,
-            WsivPortType ratpService)
-        {
-            this.mapper = mapper;
-        }
+            WsivPortType ratpService) :
+                base(mapper, memoryCache, ratpService)
+        { }
 
 
         [HttpGet("{lineId}")]

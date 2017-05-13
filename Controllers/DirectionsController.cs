@@ -12,22 +12,15 @@ using Microsoft.Extensions.Caching.Memory;
 namespace restratp.Controllers
 {
     [Route("api/[controller]")]
-    public class DirectionsController : Controller
+    public class DirectionsController : RatpBaseController
     {
-
-        private readonly IMapper mapper;
-        private IMemoryCache cache;
-        private WsivPortType ratpService;
         private const string directionsPrefix = "dir_";
 
         public DirectionsController(IMapper mapper,
             IMemoryCache memoryCache,
-            WsivPortType ratpService)
-        {
-            this.mapper = mapper;
-            cache = memoryCache;
-            this.ratpService = ratpService;
-        }
+            WsivPortType ratpService) :
+                base(mapper, memoryCache, ratpService)
+        { }
 
         // GET api/metros/directions/5
         [HttpGet("{lineId}")]

@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using RatpService;
 using restratp.Models;
 using static RatpService.WsivPortTypeClient;
@@ -10,8 +12,14 @@ using static RatpService.WsivPortTypeClient;
 namespace restratp.Controllers
 {
     [Route("api/[controller]")]
-    public class MissionsController : Controller
+    public class MissionsController : RatpBaseController
     {
+        public MissionsController(IMapper mapper,
+            IMemoryCache memoryCache,
+            WsivPortType ratpService) :
+                base(mapper, memoryCache, ratpService)
+        { }
+
         private const int MAX_MISSIONS = 4;
 
 

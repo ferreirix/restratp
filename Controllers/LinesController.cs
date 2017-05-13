@@ -13,20 +13,14 @@ using Microsoft.Extensions.Caching.Memory;
 namespace restratp.Controllers
 {
     [Route("api/[controller]")]
-    public class LinesController : Controller
+    public class LinesController : RatpBaseController
     {
-        private readonly IMapper mapper;
-        private IMemoryCache cache;
-        private WsivPortType ratpService;
-
+       
         public LinesController(IMapper mapper,
             IMemoryCache memoryCache,
-            WsivPortType ratpService)
-        {
-            this.mapper = mapper;
-            cache = memoryCache;
-            this.ratpService = ratpService;
-        }
+            WsivPortType ratpService) :
+                base(mapper, memoryCache, ratpService)
+        { }
 
         /// <summary>
         /// Endpoint to get all the lines of a specific network.
