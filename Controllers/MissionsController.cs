@@ -26,25 +26,47 @@ namespace restratp.Controllers
         [HttpGet("{lineId}/from/{fromId}/way/{way:length(1)}")]
         public async Task<IActionResult> GetMissions(string lineId, string fromId, string way)
         {
-            var service = new WsivPortTypeClient(EndpointConfiguration.WsivSOAP11port_http);
-            var station = new Station()
+            lineId = lineId.Trim().ToLower();
+            fromId = fromId.Trim().ToLower();
+            way = way.Trim().ToUpper();
+
+            if (string.IsNullOrWhiteSpace(lineId) ||
+                string.IsNullOrWhiteSpace(fromId) ||
+                string.IsNullOrWhiteSpace(way)
+            )
             {
-                id = fromId,
-                line = new Line()
+                return BadRequest();
+            }
+
+            var cacheItem = $"{lineId}.{fromId}.{way}";
+            getMissionsNextResponse missions;
+            if (!cache.TryGetValue(cacheItem, out missions))
+            {
+                var station = new Station()
                 {
-                    codeStif = lineId,
-                    realm = "r"
-                }
-            };
+                    id = fromId,
+                    line = new Line()
+                    {
+                        codeStif = lineId,
+                        realm = "r"
+                    }
+                };
 
-            var direction = new Direction()
-            {
-                sens = way
-            };
+                var direction = new Direction()
+                {
+                    sens = way
+                };
 
-            var stations = await service.getMissionsNextAsync(station, direction, "", MAX_MISSIONS);
+                var missionsRequest = new getMissionsNextRequest(station, direction, "", MAX_MISSIONS);
+                missions = await ratpService.getMissionsNextAsync(missionsRequest);
 
-            return Json(stations.@return);
+                // Set cache options.
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(5));
+                // Save data in cache.
+                cache.Set(cacheItem, missions, cacheEntryOptions);
+            }
+            return Json(missions);
         }
     }
 }

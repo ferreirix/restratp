@@ -50,7 +50,7 @@ namespace restratp.Controllers
                 stationsModel = mapper.Map<Station[], StationModel[]>(stations.@return.stations);
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromHours(24));
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(24));
                 // Save data in cache.
                 cache.Set(stationsPrefix + lineId, stationsModel, cacheEntryOptions);
             }

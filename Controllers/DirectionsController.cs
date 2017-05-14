@@ -46,7 +46,7 @@ namespace restratp.Controllers
 
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromHours(24));
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(24));
 
                 // Save data in cache.
                 cache.Set(directionsPrefix + lineId, directionsModel, cacheEntryOptions);

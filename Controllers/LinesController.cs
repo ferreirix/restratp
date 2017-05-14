@@ -36,7 +36,7 @@ namespace restratp.Controllers
         /// </remarks>
         /// <param name="networkId">The id of the network.</param>
         /// <returns >All the lines of the requested network.</returns>
-        [HttpGet("{networkId}")]
+        [HttpGet("{networkId:minlength(3)}")]
         [Produces(typeof(LineModel))]
         [SwaggerResponse(200, Type = typeof(LineModel))]
         public async Task<IActionResult> Get(string networkId)
@@ -62,7 +62,7 @@ namespace restratp.Controllers
                 
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetSlidingExpiration(TimeSpan.FromHours(24));
+                    .SetAbsoluteExpiration(TimeSpan.FromHours(24));
                 // Save data in cache.
                 cache.Set(networkId, lines, cacheEntryOptions);
             }
