@@ -20,9 +20,26 @@ namespace restratp.Controllers
             cache = memoryCache;
         }
 
+        /// <summary>
+        /// Endpoint to get the images of lines and networks.
+        /// </summary>
+        /// <remarks>
+        /// For the network's image use :
+        /// 1. p_metro.gif
+        /// 2. p_bus.gif
+        /// 3. p_rer.gif
+        /// 4. p_tram.gif
+        /// 
+        /// For the line's image use 'image' value received from api/lines/{networkId}
+        /// 
+        /// Eg:
+        ///
+        ///     api/images/p_metro.gif
+        ///     api/images/m1.gif
+        /// </remarks>
+        /// <param name="image">The name of the image.</param>
+        /// <returns >A byte array with mime type image/gif.</returns>
         [HttpGet("{image}")]
-        [Produces(typeof(byte[]))]
-        [SwaggerResponse(200, Type = typeof(byte[]))]
         public async Task<IActionResult> Get(string image)
         {
             image = image.Trim().ToLower();
@@ -31,7 +48,7 @@ namespace restratp.Controllers
             {
                 return BadRequest();
             }
-            
+
             byte[] imageBytes;
             if (!cache.TryGetValue(imgPrefix + image, out imageBytes))
             {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace restratp.Controllers
 {
     [Route("/")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class HealthStatusController : Controller
     {
         /// <summary>

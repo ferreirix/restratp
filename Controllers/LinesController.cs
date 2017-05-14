@@ -12,6 +12,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace restratp.Controllers
 {
+    
     [Route("api/[controller]")]
     public class LinesController : RatpBaseController
     {
@@ -30,15 +31,18 @@ namespace restratp.Controllers
         /// 1. metro
         /// 2. bus
         /// 3. rer
-        /// 4. tram  
+        /// 4. tram
         ///
-        /// Eg: api/lines/metro              
+        /// Eg:
+        ///
+        ///     api/lines/metro              
         /// </remarks>
         /// <param name="networkId">The id of the network.</param>
         /// <returns >All the lines of the requested network.</returns>
         [HttpGet("{networkId:minlength(3)}")]
         [Produces(typeof(LineModel))]
         [SwaggerResponse(200, Type = typeof(LineModel))]
+        [SwaggerOperation(Tags = new[] { "01. Lines" })]
         public async Task<IActionResult> Get(string networkId)
         {
             networkId = networkId.Trim().ToLower();

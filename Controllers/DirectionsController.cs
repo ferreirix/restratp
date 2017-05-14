@@ -8,6 +8,7 @@ using RatpService;
 using restratp.Models;
 using static RatpService.WsivPortTypeClient;
 using Microsoft.Extensions.Caching.Memory;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace restratp.Controllers
 {
@@ -22,8 +23,22 @@ namespace restratp.Controllers
                 base(mapper, memoryCache, ratpService)
         { }
 
-        // GET api/metros/directions/5
+        /// <summary>
+        /// Endpoint to get all the directions of a specific line.
+        /// </summary>
+        /// <remarks>
+        /// The available lineIds are returned from api/lines/{networkId}
+        ///
+        /// Eg:
+        ///
+        ///     api/directions/100110001
+        /// </remarks>
+        /// <param name="lineId">The id of the line.</param>
+        /// <returns >All the directions of the requested line.</returns>
         [HttpGet("{lineId}")]
+        [Produces(typeof(DirectionModel))]
+        [SwaggerResponse(200, Type = typeof(DirectionModel))]
+        [SwaggerOperation(Tags = new[] { "02. Directions" })]
         public async Task<IActionResult> GetDirections(string lineId)
         {
             lineId = lineId.Trim().ToLower();

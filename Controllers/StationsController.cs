@@ -8,6 +8,7 @@ using RatpService;
 using restratp.Models;
 using static RatpService.WsivPortTypeClient;
 using Microsoft.Extensions.Caching.Memory;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace restratp.Controllers
 {
@@ -22,8 +23,22 @@ namespace restratp.Controllers
                 base(mapper, memoryCache, ratpService)
         { }
 
-
+        /// <summary>
+        /// Endpoint to get all the stations of a specific line.
+        /// </summary>
+        /// <remarks>
+        /// The available lineIds are returned from api/lines/{networkId}
+        ///
+        /// Eg:
+        ///
+        ///     api/stations/100110001
+        /// </remarks>
+        /// <param name="lineId">The id of the line.</param>
+        /// <returns >All the stations of the requested line.</returns>
         [HttpGet("{lineId}")]
+        [Produces(typeof(StationModel))]
+        [SwaggerResponse(200, Type = typeof(StationModel))]
+        [SwaggerOperation(Tags = new[] { "03. Stations" })]
         public async Task<IActionResult> GetStations(string lineId)
         {
             lineId = lineId.Trim().ToLower();
@@ -57,6 +72,7 @@ namespace restratp.Controllers
             return Json(stationsModel);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("{stationId}/coordinates")]
         public async Task<IActionResult> GetStationCoordinates(string stationId)
         {
