@@ -25,7 +25,7 @@ namespace restratp.Controllers
         /// </summary>
         /// <remarks>
         /// For the network's image use :
-        /// 1. p_metro.gif
+        /// 1. p_met.gif
         /// 2. p_bus.gif
         /// 3. p_rer.gif
         /// 4. p_tram.gif
@@ -34,7 +34,7 @@ namespace restratp.Controllers
         /// 
         /// Eg:
         ///
-        ///     api/images/p_metro.gif
+        ///     api/images/p_met.gif
         ///     api/images/m1.gif
         /// </remarks>
         /// <param name="image">The name of the image.</param>
