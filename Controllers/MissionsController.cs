@@ -14,14 +14,13 @@ namespace restratp.Controllers
     [Route("api/[controller]")]
     public class MissionsController : RatpBaseController
     {
+        private const int MAX_MISSIONS = 4;
+        
         public MissionsController(IMapper mapper,
             IMemoryCache memoryCache,
             WsivPortType ratpService) :
                 base(mapper, memoryCache, ratpService)
         { }
-
-        private const int MAX_MISSIONS = 4;
-
 
         [HttpGet("{lineId}/from/{fromId}/way/{way:length(1)}")]
         public async Task<IActionResult> GetMissions(string lineId, string fromId, string way)
@@ -39,7 +38,7 @@ namespace restratp.Controllers
             }
 
             var cacheItem = $"{lineId}.{fromId}.{way}";
-            getMissionsNextResponse missions;
+            IEnumerable<string> missions;
             if (!cache.TryGetValue(cacheItem, out missions))
             {
                 var station = new Station()
@@ -58,8 +57,8 @@ namespace restratp.Controllers
                 };
 
                 var missionsRequest = new getMissionsNextRequest(station, direction, "", MAX_MISSIONS);
-                missions = await ratpService.getMissionsNextAsync(missionsRequest);
-
+                var missionsResponse = await ratpService.getMissionsNextAsync(missionsRequest);
+                missions = missionsResponse.@return.missions.Select(m => m.stationsMessages.FirstOrDefault());
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromSeconds(5));
