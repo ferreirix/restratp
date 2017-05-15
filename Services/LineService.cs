@@ -53,24 +53,22 @@ namespace restratp.Services
         {
             string imgRGB = string.Empty;
 
-            LineModel[] lines;
-            if (cache.TryGetValue(networkId, out lines))
+            LineModel[] lines = await GetNetworkLines(networkId);
+
+            var line = lines.FirstOrDefault(l => l.Id == lineId);
+            if (line != null)
             {
-                var line = lines.FirstOrDefault(l => l.Id == lineId);
-                if (line != null)
-                {
-                    var imageBytes = await imageService.GetImage(line.Image);
-                    var image = Image.Load(imageBytes);
-                    var mostUserColors = GetColor(image);
-                    var mostUserColorx = mostUserColors.Where(color => color != 0 && color != 4294967295) //not black or white
-                                                            .GroupBy(color => color)
-                                                            .OrderByDescending(grp => grp.Count())
-                                                            .Select(grp => grp.Key).FirstOrDefault();
+                var imageBytes = await imageService.GetImage(line.Image);
+                var image = Image.Load(imageBytes);
+                var prominentColor = GetColor(image)
+                                        .Where(color => color != 0 && color != 4294967295) //not black or white
+                                        .GroupBy(color => color)
+                                        .OrderByDescending(grp => grp.Count())
+                                        .Select(grp => grp.Key).FirstOrDefault();
 
-                    var x = image.Pixels.FirstOrDefault(p => p.PackedValue == mostUserColorx);
+                var x = image.Pixels.FirstOrDefault(p => p.PackedValue == prominentColor);
 
-                    imgRGB = $"rgb({x.R},{x.G},{x.B})";
-                }
+                imgRGB = $"rgb({x.R},{x.G},{x.B})";
             }
 
             return imgRGB;
