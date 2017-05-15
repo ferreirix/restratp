@@ -6,22 +6,24 @@ using Microsoft.AspNetCore.Mvc;
 using RatpService;
 using restratp.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using static RatpService.WsivPortTypeClient;
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
+using ImageSharp;
+using System.Collections.Generic;
+using System.Linq;
+using restratp.Interfaces;
 
 namespace restratp.Controllers
 {
-    
+
     [Route("api/[controller]")]
-    public class LinesController : RatpBaseController
+    public class LinesController : Controller
     {
-       
-        public LinesController(IMapper mapper,
-            IMemoryCache memoryCache,
-            WsivPortType ratpService) :
-                base(mapper, memoryCache, ratpService)
-        { }
+        private ILineService lineService;
+        public LinesController(ILineService service)
+        {
+            lineService = service;
+        }
 
         /// <summary>
         /// Endpoint to get all the lines of a specific network.
@@ -52,26 +54,24 @@ namespace restratp.Controllers
                 return BadRequest();
             }
 
-            LineModel[] lines;
-            if (!cache.TryGetValue(networkId, out lines))
-            {
-                var line = new Line()
-                {
-                    reseau = new Reseau() { code = networkId },
-                    realm = "r"
-                };
+            var lines = await lineService.GetNetworkLines(networkId);
+            return Json(lines);
+        }
 
-                var linesResponse = await ratpService.getLinesAsync(new getLinesRequest(line));
-                lines = mapper.Map<Line[], LineModel[]>(linesResponse.@return);
-                
-                // Set cache options.
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(TimeSpan.FromHours(24));
-                // Save data in cache.
-                cache.Set(networkId, lines, cacheEntryOptions);
+        [HttpGet("{networkId:minlength(3)}/line/{lineId}/color")]
+        public async Task<IActionResult> GetLineColor(string networkId, string lineId)
+        {
+            networkId = networkId.Trim().ToLower();
+            lineId = lineId.Trim().ToLower();
+
+            if (string.IsNullOrWhiteSpace(networkId) || string.IsNullOrWhiteSpace(lineId))
+            {
+                return BadRequest();
             }
 
-            return Json(lines);
+            string imgRGB = await lineService.GetLineColor(networkId, lineId);
+
+            return Ok(imgRGB);
         }
     }
 }

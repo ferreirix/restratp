@@ -12,6 +12,8 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.AspNetCore.Swagger;
 using AutoMapper;
 using RatpService;
+using restratp.Interfaces;
+using restratp.Services;
 
 namespace restratp
 {
@@ -38,7 +40,9 @@ namespace restratp
             services.AddMemoryCache();
 
             services.AddAutoMapper(typeof(Startup));
-            services.AddTransient<WsivPortType>((service) => new WsivPortTypeClient(WsivPortTypeClient.EndpointConfiguration.WsivSOAP11port_http));
+            services.AddScoped<WsivPortType>((service) => new WsivPortTypeClient(WsivPortTypeClient.EndpointConfiguration.WsivSOAP11port_http));
+            services.AddTransient<ILineService, LineService>();
+            services.AddTransient<IImageService, ImageService>();
 
             // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -66,7 +70,10 @@ namespace restratp
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
             app.UseMvc();
 
