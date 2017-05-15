@@ -49,7 +49,7 @@ namespace restratp
                     Title = "RATP REST API",
                     Description = "RATP API made simple",
                     TermsOfService = "None",
-                    Contact = new Contact { Name = "Ferreirix", Email = "", Url = "https://github.com/ferreirix" },
+                    Contact = new Contact { Name = "Ferreirix", Email = "", Url = "https://github.com/ferreirix/restratp" },
                     License = new License { Name = "MIT", Url = "https://github.com/ferreirix/restratp/blob/master/LICENSE" }
                 });
 
