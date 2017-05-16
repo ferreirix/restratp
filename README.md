@@ -1,6 +1,6 @@
 # RATP API made simple using REST Webservices.
 
-## How to get the realtime schedules?
+## How to get the realtime trips?
 
 1. **Get the lines**
     1. Sample request for metros : http://restratpws.azurewebsites.net/api/lines/metro
@@ -67,7 +67,7 @@
         ...
       ]
       ```
-1. **Get the realtime schedules**
+1. **Get the realtime trips**
     1. Sample request for M1 from Argentine towards La Défense : http://restratpws.azurewebsites.net/api/missions/100110001/from/114/way/a
     1. Sample response 
       ```
@@ -81,9 +81,9 @@
 
 ## Extras
 
-* Get the lines and networks images
+* Get the lines' and networks' images
 
-    * For the network's image use :
+    * For the networks' images use :
       ```
       p_met.gif
       p_bus.gif
@@ -97,3 +97,9 @@
       http://restratpws.azurewebsites.net/api/images/p_met.gif
       
       http://restratpws.azurewebsites.net/api/images/m1.gif
+      
+* Get the color of a line in rgb format
+
+     * Sample request: http://restratpws.azurewebsites.net/api/lines/metro/line/100110001/color
+      
+     * Sample response : rgb(255,207,0)
