@@ -61,7 +61,7 @@ namespace restratp.Services
                 var imageBytes = await imageService.GetImage(line.Image);
                 var image = Image.Load(imageBytes);
                 var prominentColor = GetColor(image)
-                                        .Where(color => color != 0 && color != 4294967295) //not black or white
+                                        .Where(color => color != (uint)LineColor.Black && color != (uint)LineColor.White) //not black or white
                                         .GroupBy(color => color)
                                         .OrderByDescending(grp => grp.Count())
                                         .Select(grp => grp.Key).FirstOrDefault();

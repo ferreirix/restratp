@@ -58,7 +58,32 @@ namespace restratp.Controllers
             return Json(lines);
         }
 
+
+
+
+        /// <summary>
+        /// Endpoint to get the color of one line.
+        /// </summary>
+        /// <remarks>
+        /// The available network ids are :
+        /// 1. metro
+        /// 2. bus
+        /// 3. rer
+        /// 4. tram
+        ///
+        /// The available lineIds are returned from api/lines/{networkId}
+        ///
+        /// Eg:
+        ///
+        ///     api/lines/metro/line/100110001/color           
+        /// </remarks>
+        /// <param name="networkId">The id of the network.</param>
+        /// <param name="lineId">The id of the line.</param>        
+        /// <returns >The color in rgb format eg: rgb(109, 94, 207) .</returns>
+        [Produces(typeof(string))]
+        [SwaggerResponse(200, Type = typeof(string))]
         [HttpGet("{networkId:minlength(3)}/line/{lineId}/color")]
+        [SwaggerOperation(Tags = new[] { "01. Lines" })]
         public async Task<IActionResult> GetLineColor(string networkId, string lineId)
         {
             networkId = networkId.Trim().ToLower();
