@@ -44,6 +44,18 @@ namespace restratp
             services.AddTransient<ILineService, LineService>();
             services.AddTransient<IImageService, ImageService>();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowCredentials()
+                               .WithHeaders("accept", "content-type", "origin");
+                    });
+            });
+
             // Register the Swagger generator, defining one or more Swagger documents
             services.AddSwaggerGen(c =>
             {
@@ -74,6 +86,8 @@ namespace restratp
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("AllowAllOrigins");
 
             app.UseMvc();
 
