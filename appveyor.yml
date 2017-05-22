@@ -1,0 +1,4 @@
+build_script:
+  - ps: dotnet --info
+  - ps: dotnet restore
+  - ps: dotnet build -v d
