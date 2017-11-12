@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using ImageSharp;
+using SixLabors.ImageSharp;
 using Microsoft.Extensions.Caching.Memory;
 using RatpService;
 using restratp.Interfaces;
@@ -60,26 +60,31 @@ namespace restratp.Services
             {
                 var imageBytes = await imageService.GetImage(line.Image);
                 var image = Image.Load(imageBytes);
-                var prominentColor = GetColor(image)
+                var prominentColor = GetPixelsColor(image)
                                         .Where(color => color != (uint)LineColor.Black && color != (uint)LineColor.White) //not black or white
                                         .GroupBy(color => color)
                                         .OrderByDescending(grp => grp.Count())
                                         .Select(grp => grp.Key).FirstOrDefault();
 
-                var x = image.Pixels.FirstOrDefault(p => p.PackedValue == prominentColor);
+                var rgbColor = new Rgba32(prominentColor);
 
-                imgRGB = $"rgb({x.R},{x.G},{x.B})";
+                imgRGB = $"rgb({rgbColor.R},{rgbColor.G},{rgbColor.B})";
             }
 
             return imgRGB;
         }
 
-        private IEnumerable<uint> GetColor(Image<Rgba32> img)
+        private IEnumerable<uint> GetPixelsColor(Image<Rgba32> img)
         {
-            var count = img.Pixels.Length;
-            foreach (var pixel in img.Pixels)
+            var heigth = img.Height;
+            var length = img.Width;
+
+            for (int i = 0; i < length; i++)
             {
-                yield return pixel.PackedValue;
+                for (int j = 0; j < heigth; j++)
+                {
+                    yield return img[i, j].PackedValue;
+                }
             }
         }
     }

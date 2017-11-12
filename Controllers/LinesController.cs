@@ -8,9 +8,7 @@ using restratp.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
-using ImageSharp;
-using System.Collections.Generic;
-using System.Linq;
+using SixLabors.ImageSharp;
 using restratp.Interfaces;
 
 namespace restratp.Controllers
